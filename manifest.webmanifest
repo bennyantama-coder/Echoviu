@@ -1,0 +1,11 @@
+{
+  "name": "EchoVue Drive",
+  "short_name": "EchoVue",
+  "description": "PWA viewer cine echocardiography dari Google Drive",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08131c",
+  "theme_color": "#0b6477",
+  "icons": []
+}

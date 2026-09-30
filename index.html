@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#0b6477"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>EchoVue Drive</title>
+  <link rel="manifest" href="./manifest.webmanifest"/>
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">EchoVue Drive</div>
+    <span class="badge">PWA · Drive</span>
+    <span id="accountLabel" class="status"></span>
+    <button id="lockBtn" class="btn hidden">Kunci</button>
+    <button id="signOutBtn" class="btn danger hidden">Keluar</button>
+  </header>
+
+  <main class="wrap">
+    <section id="setupPanel" class="panel setup">
+      <h2 style="margin-top:0">Hubungkan Google Drive</h2>
+      <p class="help">Aplikasi membaca folder EchoVue di Google Drive langsung dari browser. GitHub/hosting hanya menyimpan kode PWA; data pasien tidak disalin ke hosting aplikasi.</p>
+      <div id="clientIdWarning" class="warning hidden">GOOGLE_CLIENT_ID belum diisi di <code>config.js</code>. Ikuti README sebelum login.</div>
+      <div class="setup-grid" style="margin-top:12px">
+        <input id="rootFolder" class="rootid" placeholder="Tempel URL atau Folder ID Google Drive untuk folder EchoVue"/>
+        <button id="saveRootBtn" class="btn">Simpan Folder</button>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button id="signInBtn" class="btn primary">Masuk dengan Google</button>
+        <button id="scanBtn" class="btn" disabled>Scan Folder Echo</button>
+        <button id="bioSetupBtn" class="btn" disabled>Aktifkan Face ID / Biometrik</button>
+      </div>
+      <p id="statusText" class="status">Belum terhubung.</p>
+    </section>
+
+    <section id="listPanel" class="panel hidden">
+      <div class="toolbar">
+        <input id="searchInput" class="search" placeholder="Cari nama, ID, atau tanggal..."/>
+        <button id="refreshBtn" class="btn">Refresh</button>
+        <span id="examCount" class="status"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Nama Pasien</th><th>Tanggal Exam</th><th>Tanggal Lahir</th><th>Sex</th><th>Cine</th></tr></thead>
+          <tbody id="examRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="examPanel" class="panel hidden">
+      <div class="viewer-header">
+        <button id="backBtn" class="btn">← Daftar</button>
+        <div><div id="patientTitle" class="patient-title"></div><div id="patientMeta" class="status"></div></div>
+        <div class="privacy">Tidak ada data pasien yang dicache oleh service worker</div>
+      </div>
+      <div class="exam">
+        <aside id="cineSidebar" class="sidebar"></aside>
+        <div class="viewer">
+          <div class="video-stage" id="videoStage">
+            <video id="cineVideo" playsinline muted></video>
+            <div id="noVideo" class="no-video hidden"></div>
+          </div>
+          <div class="controls">
+            <div class="transport">
+              <button id="prevCine" class="btn icon">◀ Cine</button>
+              <button id="playPause" class="btn primary icon">▶︎</button>
+              <button id="nextCine" class="btn icon">Cine ▶</button>
+              <input id="timeline" class="timeline" type="range" min="0" max="1000" value="0"/>
+              <span id="timeLabel" class="time">0:00 / 0:00</span>
+              <select id="speedSel" class="btn"><option>.25×</option><option>.5×</option><option selected>1×</option><option>1.5×</option><option>2×</option></select>
+              <button id="fullBtn" class="btn">Fullscreen</button>
+            </div>
+            <div class="enhance">
+              <div class="tabs"><button class="btn tab active" data-mode="original">Original</button><button class="btn tab" data-mode="gelike">GE-like</button><button class="btn tab" data-mode="custom">Custom</button></div>
+              <label>Brightness <input id="brightness" type="range" min="50" max="150" value="100"/></label>
+              <label>Contrast <input id="contrast" type="range" min="50" max="180" value="100"/></label>
+              <label>Gamma <input id="gamma" type="range" min="60" max="160" value="100"/></label>
+              <label>Sharpness <input id="sharpness" type="range" min="0" max="100" value="0"/></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="lockOverlay" class="overlay hidden">
+    <div class="panel lockbox">
+      <div class="lock-icon">🔒</div><h2>EchoVue terkunci</h2>
+      <p class="help">Gunakan biometrik perangkat bila sudah diaktifkan. Jika belum, masuk kembali dengan Google.</p>
+      <button id="unlockBioBtn" class="btn primary">Buka dengan Face ID / Biometrik</button>
+      <button id="unlockGoogleBtn" class="btn" style="margin-left:8px">Masuk Google</button>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="./app.js"></script>
+</body>
+</html>
